@@ -1,7 +1,6 @@
 from room import Room
 from player import Player
 from world import World
-
 import random
 from ast import literal_eval
 
@@ -28,7 +27,52 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+graph = Graph()
 
+unexplored = []
+unexplored.append(player.current_room)
+visited = set()
+path = []
+while len(unexplored) > 0:
+    room = unexplored[-1] 
+    if room.id not in visited:
+        graph.add_room(room.id, room.get_exits())
+    
+    visited.add(room.id)
+
+    # Move to Unexplored Room
+    direction = graph.check_for_unexplored(room.id)
+    if direction is not None and room is player.current_room: 
+        player.travel(direction[0])
+        traversal_path.append(direction[0])
+        # Add to Path, Add Connections
+        path.append(direction[0])
+
+        if player.current_room.id not in visited:
+            graph.add_room(player.current_room.id, player.current_room.get_exits())
+            visited.add(player.current_room.id)
+        graph.add_connection(room.id, player.current_room.id, direction[0])
+        
+    else:
+        # Reverse Path Until Direction is Not None
+        while graph.check_for_unexplored(player.current_room.id) is None:
+          
+            if len(path) > 0:
+                backtrack = graph.reverse(path.pop())
+                player.travel(backtrack)
+                traversal_path.append(backtrack)
+            else:
+                break
+    
+    if graph.check_for_unexplored(room.id) is None:
+        unexplored.pop()
+
+    if graph.check_for_unexplored(player.current_room.id) is not None: 
+        if player.current_room not in unexplored:
+            unexplored.append(player.current_room)
+
+num_moves = len(traversal_path)  
+print(num_moves)
 
 
 # TRAVERSAL TEST
