@@ -3,7 +3,7 @@ from player import Player
 from world import World
 import random
 from ast import literal_eval
-
+from graph import Graph
 # Load world
 world = World()
 
@@ -28,6 +28,7 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 graph = Graph()
+
 
 unexplored = []
 unexplored.append(player.current_room)
@@ -71,7 +72,7 @@ while len(unexplored) > 0:
         if player.current_room not in unexplored:
             unexplored.append(player.current_room)
 
-num_moves = len(traversal_path)  
+num_moves = len(traversal_path)
 print(num_moves)
 
 
